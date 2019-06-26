@@ -47,5 +47,34 @@ namespace WebApi.Service
 
             return null;
         }
+
+        public List<Pedido> BuscarTodosOsPedidos()
+        {
+            return (List<Pedido>) repository.GetAll();
+        }
+
+        public Pedido BuscarPedidoPeloId(int? id)
+        {
+            var pedido = repository.Find(id);
+
+            var produtoRepository = new ProdutoRepository();
+
+            for(var i = 0; i < pedido.PedidoProdutos.Count; i++)
+            {
+                pedido.PedidoProdutos[i].Produto = produtoRepository.Find(pedido.PedidoProdutos[i].IdProduto);
+            }
+
+            return pedido;
+        }
+
+        public List<Pedido> BuscarPedidoPeloIntervalo(DateTime dataInicial, DateTime dataFinal)
+        {
+            if (dataInicial != null && dataInicial != new DateTime())
+                if (dataFinal != null && dataFinal != new DateTime())
+                    return (List<Pedido>) repository.Get(x => x.DataPedido >= dataInicial && x.DataPedido <= dataFinal);
+
+            return null;
+        }
+
     }
 }
