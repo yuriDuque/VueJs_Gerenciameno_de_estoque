@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using Repository.Context;
 using Repository.Entities;
 using WebApi.Repository.EntitieRepository;
 using WebApi.Repository.Entities;
+using WebApi.Service;
 
 namespace WebApi
 {
@@ -12,60 +14,77 @@ namespace WebApi
         {
             using (var context = new BaseContext())
             {
-                var pRepository = new ProdutoRepository();
+
+                var pService = new ProdutoService();
 
                 var produto = new Produto()
                 {
                     CodInterno = 01,
                     CodBarras = 01,
                     Descricao = "teste",
-                    ValorVenda = 10.5
+                    ValorVenda = 10
                 };
 
-                pRepository.Save(produto);
+                var produto2 = new Produto()
+                {
+                    CodInterno = 02,
+                    CodBarras = 02,
+                    Descricao = "teste 01",
+                    ValorVenda = 5
+                };
 
-                var produtos = pRepository.GetAll();
+                var produto3 = new Produto()
+                {
+                    CodInterno = 03,
+                    CodBarras = 03,
+                    Descricao = "teste 03",
+                    ValorVenda = 15
+                };
+
+                pService.SalvarProduto(produto);
+                pService.SalvarProduto(produto2);
+                pService.SalvarProduto(produto3);
+                
+                var produtos = pService.BuscarTodosOsProdutos();
+                /*
 
 
+                var produtoAlterado = new Produto()
+                {
+                    IdProduto = 01,
+                    CodInterno = 02,
+                    CodBarras = 02,
+                    Descricao = "teste alterado",
+                    ValorVenda = 15.5
+                };
 
+                //pService.AlterarProduto(produtoAlterado);
 
-                var pedidoRepository = new PedidoRepository();
+                var produtoBuscado = pService.BuscarPeloCodInterno(produto.CodInterno);
+
+                pService.ExcluirProduto(produtoAlterado.IdProduto);
+
+            
+                */
+
+                var pedidoService = new PedidoService();
 
                 var pedido = new Pedido();
-                pedido.DataPedido = DateTime.Now;
-                pedido.ValorTotal = 0;
 
-                foreach (var p in produtos)
-                {
-                    pedido.ValorTotal += p.ValorVenda;
-                }
-
-                pedidoRepository.Save(pedido);
-
-
-
-
-                var pdRepository = new PedidoProdutosRepository();
+                var pedidosProdutos = new List<PedidoProdutos>();
 
                 foreach(var p in produtos)
                 {
-                    var pedidoProduto = new PedidoProdutos()
+                    var pd = new PedidoProdutos()
                     {
-                        IdPedido = pedido.IdPedido,
+                        Pedido = pedido,
                         IdProduto = p.IdProduto
                     };
 
-                    pdRepository.Save(pedidoProduto);
+                    pedido.PedidoProdutos.Add(pd);
                 }
 
-
-
-
-                produtos = pRepository.GetAll();
-                var pedidos = pedidoRepository.GetAll();
-                var pds = pdRepository.GetAll();
-
-
+                pedidoService.SalvarPedido(pedido);
             }
         }
     }

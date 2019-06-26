@@ -15,6 +15,6 @@ namespace Repository.Entities
         public double ValorTotal { get; set; }
 
         [Required]
-        public ICollection<PedidoProdutos> PedidoProdutos { get; set; } = new List<PedidoProdutos>();
+        public List<PedidoProdutos> PedidoProdutos { get; set; } = new List<PedidoProdutos>();
     }
 }

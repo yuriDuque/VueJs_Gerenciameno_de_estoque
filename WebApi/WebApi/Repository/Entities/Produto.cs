@@ -20,7 +20,7 @@ namespace Repository.Entities
 
         public double ValorVenda { get; set; }
 
-        public ICollection<PedidoProdutos> PedidoProdutos { get; set; } = new List<PedidoProdutos>();
+        public List<PedidoProdutos> PedidoProdutos { get; set; } = new List<PedidoProdutos>();
     }
 
 
