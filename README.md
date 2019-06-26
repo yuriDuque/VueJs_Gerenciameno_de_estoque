@@ -3,4 +3,5 @@
 Gerar banco de dados
 
 PM> add-migration GerenciamentoProdutosDb
+
 PM> update-database –verbose
