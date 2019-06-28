@@ -1,13 +1,19 @@
 <template>
-  <div>
-  <b-navbar type="dark" variant="dark">
-    <b-navbar-nav>
-      <b-navbar-brand href="">Gerenciamento</b-navbar-brand>
-      <b-nav-item href="/pedidos">Pedidos</b-nav-item>
-      <b-nav-item href="/produtos">Produtos</b-nav-item>
-    </b-navbar-nav>
-  </b-navbar>
-</div>
+  <div id="navbar">
+    <b-navbar type="dark" variant="dark">
+      <b-navbar-nav>
+        <b-navbar-brand>
+          <router-link class="link" to="/pedidos">Gerenciamento</router-link>
+        </b-navbar-brand>
+        <b-nav-item>
+          <router-link class="link" to="/pedidos">Pedidos</router-link>
+        </b-nav-item>
+        <b-nav-item>
+          <router-link class="link" to="/produtos">Produtos</router-link>
+        </b-nav-item>
+      </b-navbar-nav>
+    </b-navbar>
+  </div>
 </template>
 
 <script>
@@ -18,3 +24,14 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.link {
+  color: white;
+  text-decoration: none;
+}
+
+.link:hover {
+  color: gray;
+}
+</style>
