@@ -24,7 +24,7 @@ namespace WebApi.Controllers
 
         // POST: api/Produtos
         [HttpPost]
-        public async Task<IActionResult> PostProduto([FromBody] Produto produto)
+        public async Task<IActionResult> PostProduto(Produto produto)
         {
             if (!ModelState.IsValid)
             {
