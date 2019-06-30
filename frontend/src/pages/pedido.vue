@@ -78,18 +78,20 @@ export default {
     }
   },
   mounted() {
-    this.totalRows = this.produtos.length;
+    this.totalRows = this.pedidos.length;
 
-    PedidoService.listarProdutos().then(resposta => {
+    PedidoService.listarPedidos().then(resposta => {
       resposta.data.forEach(element => {
-        //inserindo marcara de moeda
-        element.valorVenda = element.valorVenda.toLocaleString("pr-br", {
+        element.valorTotal = element.valorTotal.toLocaleString("pr-br", {
           style: "currency",
           currency: "BRL"
         });
-      });
 
-      this.pedidos = resposta.data;
+        element.dataPedido = this.organizarData(element.dataPedido);
+
+        //inserindo marcara de moeda
+        this.pedidos = resposta.data;
+      });
     });
   },
   data() {
@@ -97,32 +99,26 @@ export default {
       pedidos: [],
       fields: [
         {
-          key: "idProduto",
+          key: "idPedido",
           label: "Id",
           sortable: true,
           sortDirection: "desc"
         },
         {
-          key: "codInterno",
-          label: "Código Interno",
+          key: "dataPedido",
+          label: "Data do pedido",
           sortable: true,
           class: "text-center"
         },
         {
-          key: "codBarras",
-          label: "Código Barras",
+          key: "valorTotal",
+          label: "Valor total",
           sortable: true,
           class: "text-center"
         },
         {
-          key: "descricao",
-          label: "Descrição",
-          sortable: true,
-          class: "text-center"
-        },
-        {
-          key: "valorVenda",
-          label: "Valor de venda",
+          key: "pedidoProdutos",
+          label: "Número de produtos",
           sortable: true,
           class: "text-center"
         },
@@ -155,6 +151,20 @@ export default {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
+    },
+    organizarData(d) {
+      var dataSplit = String(d).split("T");
+      var data = dataSplit[0];
+      var time = dataSplit[1];
+
+      var ano = String(data).split("-")[0];
+      var mes = String(data).split("-")[1];
+      var dia = String(data).split("-")[2];
+
+      var hora = String(time).split(":")[0];
+      var minuto = String(time).split(":")[1];
+
+      return `${dia}/${mes}/${ano} ${hora}:${minuto}`;
     }
   },
   components: {

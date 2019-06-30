@@ -6,7 +6,7 @@
     <div>
       <b-form @submit="salvar" @reset="onReset" v-if="show">
         <b-form-group id="input-group-1" label="Selecione os produtos:" label-for="input-1">
-          <b-form-select v-model="selected" :options="options" multiple :select-size="10"></b-form-select>
+          <b-form-select v-model="selected" :options="options" multiple :select-size="10" required></b-form-select>
           <div class="mt-3">
             Produtos Selecionados:
             <strong>{{ selected }}</strong>
@@ -25,6 +25,7 @@
 
 <script>
 import Titulo from "../components/titulo.vue";
+import PedidoService from "../service/pedidoService";
 import ProdutoService from "../service/produtoService";
 
 export default {
@@ -40,17 +41,22 @@ export default {
       var prods = [];
 
       resposta.data.forEach(element => {
-        element.valorVenda = element.valorVenda.toLocaleString("pr-br", {
+        /*element.valorVenda = element.valorVenda.toLocaleString("pr-br", {
           style: "currency",
           currency: "BRL"
-        });
+        });*/
 
         prods.push(
-          element.codInterno +
-            " - " +
+          element.idProduto +
+            "-" +
+            element.codInterno +
+            "-" +
+            element.codBarras +
+            "-" +
             element.descricao +
-            " - " +
-            element.valorVenda
+            "-R$" +
+            element.valorVenda +
+            ".00"
         );
       });
 
@@ -71,12 +77,31 @@ export default {
     },
 
     salvar() {
-      ProdutoService.salvar(this.form)
+      var produtos = [];
+
+      this.selected.forEach(element => {
+        element = String(element).trim();
+        element = String(element).replace("R$", "");
+        element = String(element).replace(".00", "");
+        element = String(element).split("-");
+
+        var produto = {
+          idProduto: element[0],
+          codInterno: element[1],
+          codBarras: element[2],
+          descricao: element[3],
+          valorVenda: element[4]
+        };
+
+        produtos.push(produto);
+      });
+
+      PedidoService.salvar(produtos)
         .then(resposta => {
-          alert("Produto salvo com sucesso!\n" + resposta);
+          alert("Pedido salvo com sucesso!\n" + resposta);
         })
         .catch(error => {
-          alert("Erro ao salvar produto!\n" + error);
+          alert("Erro ao salvar pedido!\n" + error);
         });
     },
 

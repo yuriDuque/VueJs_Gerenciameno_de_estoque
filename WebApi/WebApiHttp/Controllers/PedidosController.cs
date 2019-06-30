@@ -45,7 +45,8 @@ namespace WebApi.Controllers
             return Ok(pedido);
         }
 
-        // GET: api/Pedidos
+        // GET: api/PedidosData
+        [Route("api/PedidosData")]
         [HttpGet]
         public async Task<IActionResult> GetPedidoByDate([FromBody] DateTime dataInicial, DateTime dataFinal)
         {
@@ -61,16 +62,21 @@ namespace WebApi.Controllers
 
         // POST: api/Pedidos
         [HttpPost]
-        public async Task<IActionResult> PostPedido([FromBody] Pedido pedido)
+        public async Task<IActionResult> PostPedido([FromBody] List<Produto> produtos)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            pedido = service.SalvarPedido(pedido);
+            if(produtos.Count == 0)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return CreatedAtAction("GetPedido", new { id = pedido.IdPedido }, pedido);
+            var pedidoResposta = service.SalvarPedido(produtos);
+
+            return CreatedAtAction("GetPedido", new { id = pedidoResposta.IdPedido }, pedidoResposta);
         }
     }
 }

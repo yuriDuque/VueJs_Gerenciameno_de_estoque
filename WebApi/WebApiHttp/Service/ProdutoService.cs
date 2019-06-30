@@ -73,7 +73,7 @@ namespace WebApi.Service
             return null;
         }
 
-        public Produto BuscarPeloCodInterno(int? cod)
+        public Produto BuscarPeloCodInterno(int cod)
         {
             if(cod != null)
             {

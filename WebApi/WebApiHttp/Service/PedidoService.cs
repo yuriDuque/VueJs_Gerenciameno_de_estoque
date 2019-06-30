@@ -11,46 +11,53 @@ namespace WebApi.Service
     public class PedidoService
     {
         private PedidoRepository repository = new PedidoRepository();
+        private ProdutoService produtoService = new ProdutoService();
 
-        public Pedido SalvarPedido(Pedido p)
+        public Pedido SalvarPedido(List<Produto> produtos)
         {
-            if (p.IdPedido != null)
+            if (produtos == null)
                 throw new Exception("Não é possivel salvar um pedido vazio!");
 
-            else if (p.PedidoProdutos != null && p.PedidoProdutos[0].IdProduto != null)
-            {
-                p.DataPedido = DateTime.Now;
-
-                var rodutoRepository = new ProdutoRepository();
-
-                foreach(var pd in p.PedidoProdutos)
+            else if (produtos[0].CodInterno != 0)
+            {                
+                var pedido = new Pedido()
                 {
-                    var produto = rodutoRepository.Find(pd.IdProduto);
+                    PedidoProdutos = new List<PedidoProdutos>()
+                };
+                pedido.DataPedido = Convert.ToDateTime(DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
 
-                    p.ValorTotal += produto.ValorVenda;
+                foreach (var p in produtos)
+                { 
+                    var produto = produtoService.BuscarPeloCodInterno(p.CodInterno);
+                    pedido.ValorTotal += produto.ValorVenda;
+                    var pd = new PedidoProdutos()
+                    {
+                        IdProduto = produto.IdProduto
+                    };
+                    pedido.PedidoProdutos.Add(pd);
                 }
 
-                var pedidoProdutos = p.PedidoProdutos;
-                p.PedidoProdutos = new List<PedidoProdutos>();
+                var pedidoProdutos = pedido.PedidoProdutos;
+                pedido.PedidoProdutos = new List<PedidoProdutos>();
 
-                repository.Save(p);
+                repository.Save(pedido);
 
                 foreach(var pd in pedidoProdutos)
                 {
-                    pd.IdPedido = p.IdPedido;
-                    p.PedidoProdutos.Add(pd);
+                    pd.IdPedido = pedido.IdPedido;
+                    pedido.PedidoProdutos.Add(pd);
                 }
 
-                repository.Update(p);
-
+                repository.Update(pedido);
             }
 
             return null;
         }
 
-        public List<Pedido> BuscarTodosOsPedidos()
+        public IQueryable<Pedido> BuscarTodosOsPedidos()
         {
-            return (List<Pedido>) repository.GetAll();
+            var teste = repository.GetAll();
+            return repository.GetAll();
         }
 
         public Pedido BuscarPedidoPeloId(int? id)
