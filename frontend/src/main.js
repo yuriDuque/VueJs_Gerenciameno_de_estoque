@@ -20,7 +20,7 @@ const routes = [
   { path: "/produtos", component: Produto },
   { path: "/pedidos/cadastrar", component: PedidoForm },
   { path: "/produtos/cadastrar", component: ProdutoForm },
-  { path: "/produtos/alterar/", component: ProdutoForm }
+  { path: "/produtos/alterar", component: ProdutoForm }
 ];
 
 const router = new VueRouter({

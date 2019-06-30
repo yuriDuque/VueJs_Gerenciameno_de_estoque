@@ -59,10 +59,16 @@
       <p class="h6">{{fields[2].label +": "+ produto.codBarras}}</p>
       <p class="h6">{{fields[4].label +": "+ produto.valorVenda}}</p>
 
-      <router-link to="{ path: 'alterarProduto', params: { productID: }}">
-        <b-button variant="outline-success" class="btn-alterar">Alterar produto</b-button>
-      </router-link>
-      <b-button variant="outline-danger" class="btn-excluir">Excluir produto</b-button>
+      <b-button
+        variant="outline-success"
+        class="btn-alterar"
+        @click="alterar(produto)"
+      >Alterar produto</b-button>
+      <b-button
+        variant="outline-danger"
+        class="btn-excluir"
+        @click="excluir(produto)"
+      >Excluir produto</b-button>
     </b-modal>
   </div>
 </template>
@@ -75,19 +81,7 @@ export default {
   mounted() {
     this.totalRows = this.produtos.length;
 
-    ProdutoService.listarProdutos().then(resposta => {
-      resposta.data.forEach(element => {
-        element.pedidoProdutos = element.pedidoProdutos.length;
-
-        //inserindo marcara de moeda
-        element.valorVenda = element.valorVenda.toLocaleString("pr-br", {
-          style: "currency",
-          currency: "BRL"
-        });
-      });
-
-      this.produtos = resposta.data;
-    });
+    this.listar();
   },
   data() {
     return {
@@ -152,6 +146,37 @@ export default {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
+    },
+
+    listar() {
+      ProdutoService.listarProdutos().then(resposta => {
+        resposta.data.forEach(element => {
+          element.pedidoProdutos = element.pedidoProdutos.length;
+
+          //inserindo marcara de moeda
+          element.valorVenda = element.valorVenda.toLocaleString("pr-br", {
+            style: "currency",
+            currency: "BRL"
+          });
+        });
+
+        this.produtos = resposta.data;
+      });
+    },
+
+    excluir(produto) {
+      ProdutoService.excluirProduto(produto.idProduto).then(() => {
+        alert("Produto '" + this.produto.descricao + "' excluito com sucesso!");
+        this.produtos = null;
+        this.listar();
+      });
+    },
+
+    alterar(produto) {
+      this.$router.replace({
+        path: "/produtos/alterar?id=" + produto.idProduto
+      });
+      this.$emit("emit-produtoAlterar", produto);
     }
   },
   components: {

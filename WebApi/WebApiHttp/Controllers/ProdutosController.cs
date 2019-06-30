@@ -92,16 +92,9 @@ namespace WebApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var produto = service.BuscarPeloCodInterno(id);
-
-            if (produto == null)
-            {
-                return NotFound();
-            }
-
             service.ExcluirProduto(id);
 
-            return Ok(produto);
+            return Ok();
         }
     }
 }

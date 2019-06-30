@@ -1,7 +1,8 @@
 <template>
   <div class="container">
     <div>
-      <Titulo texto="Cadastro de produtos" />
+      <Titulo v-if="path === '/produtos/cadastrar' " texto="Cadastro de produtos" />
+      <Titulo v-if="path === '/produtos/alterar'" texto="Alterar de produto" />
     </div>
     <div>
       <b-form @submit="salvar" @reset="onReset" v-if="show">
@@ -21,8 +22,24 @@
           <b-form-input v-model="form.valorVenda" type="number" required></b-form-input>
         </b-form-group>
 
-        <b-button type="submit" variant="success" style="margin-right: 10px;">Cadastrar</b-button>
-        <b-button type="reset" variant="secondary" style="margin-right: 10px;">Limpar</b-button>
+        <b-button
+          @click="salvar()"
+          v-if="path === '/produtos/cadastrar'"
+          variant="success"
+          style="margin-right: 10px;"
+        >Cadastrar</b-button>
+        <b-button
+          @click="salvar()"
+          v-if="path === '/produtos/alterar'"
+          variant="success"
+          style="margin-right: 10px;"
+        >Alterar</b-button>
+        <b-button
+          v-if="path === '/produtos/cadastrar' "
+          type="reset"
+          variant="secondary"
+          style="margin-right: 10px;"
+        >Limpar</b-button>
         <router-link to="/produtos">
           <b-button type="reset" variant="danger" class="btn-cadastrar">Voltar</b-button>
         </router-link>
@@ -34,6 +51,7 @@
 <script>
 import Titulo from "../components/titulo.vue";
 import ProdutoService from "../service/produtoService";
+import produtoService from "../service/produtoService";
 
 export default {
   components: {
@@ -42,18 +60,26 @@ export default {
   data() {
     return {
       form: {
+        idProduto: null,
         codInterno: null,
         codBarras: null,
         descricao: "",
         valorVenda: null
       },
+      produto: null,
+      path: null,
       show: true
     };
+  },
+  mounted() {
+    this.path = window.location.pathname;
+    this.getProduto();
   },
   methods: {
     onReset(evt) {
       evt.preventDefault();
       // Reset our form values
+      this.form.idProduto = null;
       this.form.codInterno = null;
       this.form.codBarras = null;
       this.form.descricao = "";
@@ -66,12 +92,29 @@ export default {
     },
 
     salvar() {
-      ProdutoService.salvar(this.form)
+      if (this.form.idProduto == null) {
+        ProdutoService.salvar(this.produto)
+          .then(() => {
+            alert("Produto salvo com sucesso!");
+            this.$router.replace({ path: "/produtos" });
+          })
+          .catch(error => {
+            alert("Erro ao salvar produto!\n" + error);
+            this.$router.replace({ path: "/produtos" });
+          });
+      }
+    },
+
+    getProduto() {
+      var idProduto = window.location.href.split("=")[1];
+      var produto = produtoService
+        .buscarProdutoPeloId(idProduto)
         .then(resposta => {
-          alert("Produto salvo com sucesso!\n" + resposta);
-        })
-        .catch(error => {
-          alert("Erro ao salvar produto!\n" + error);
+          this.form.idProduto = resposta.data.idProduto;
+          this.form.codInterno = resposta.data.codInterno;
+          this.form.codBarras = resposta.data.codBarras;
+          this.form.descricao = resposta.data.descricao;
+          this.form.valorVenda = resposta.data.valorVenda;
         });
     },
 

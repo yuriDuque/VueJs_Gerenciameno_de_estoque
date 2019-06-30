@@ -7,5 +7,13 @@ export default {
 
   salvar: produto => {
     return http.post("/produtos", produto);
+  },
+
+  excluirProduto: id => {
+    return http.delete("/produtos/" + id);
+  },
+
+  buscarProdutoPeloId: id => {
+    return http.get("/produtos/" + id);
   }
 };
