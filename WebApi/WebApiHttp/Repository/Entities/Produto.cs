@@ -7,14 +7,13 @@ namespace Repository.Entities
     public class Produto
     {
         [Key]
-        public int? IdProduto { get; internal set; }
+        public int IdProduto { get; internal set; }
 
         [Required]
-        public int? CodInterno { get; set; }
+        public int CodInterno { get; set; }
 
         [Required]
-        [MaxLength(13)]
-        public int? CodBarras { get; set; }
+        public int CodBarras { get; set; }
 
         public string Descricao { get; set; }
 

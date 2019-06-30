@@ -38,7 +38,7 @@ namespace WebApi.Controllers
 
         // PUT: api/Produtos/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduto([FromRoute] int? id, [FromBody] Produto produto)
+        public async Task<IActionResult> PutProduto([FromRoute] int id, [FromBody] Produto produto)
         {
             if (!ModelState.IsValid)
             {

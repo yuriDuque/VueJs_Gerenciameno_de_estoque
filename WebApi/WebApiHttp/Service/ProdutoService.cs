@@ -21,7 +21,7 @@ namespace WebApi.Service
             if (p == null)
                 throw new Exception("Não é possivel salvar um produto vazio!");
 
-            if(p.IdProduto == null && p.CodInterno != null && p.CodBarras != null)
+            if(p.IdProduto == 0 && p.CodInterno != 0 && p.CodBarras != 0)
             {
                 var codInterno = repository.Get(x => x.CodInterno == p.CodInterno).FirstOrDefault();
                 var codBarras = repository.Get(x => x.CodBarras == p.CodBarras).FirstOrDefault();
@@ -44,7 +44,7 @@ namespace WebApi.Service
         {
             if (p == null)
                 throw new Exception("Não é possivel alterar um produto vazio!");
-            else if (p.IdProduto != null)
+            else if (p.IdProduto != 0)
             {
                 // está mantendo o produto "p" em memória e não está buscando no banco
                 var oldProduto = repository.Find(p.IdProduto);

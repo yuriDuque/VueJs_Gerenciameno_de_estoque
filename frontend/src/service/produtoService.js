@@ -6,6 +6,6 @@ export default {
   },
 
   salvar: produto => {
-    return http.post("/produtos", { body: produto });
+    return http.post("/produtos", produto);
   }
 };
