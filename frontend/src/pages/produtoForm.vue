@@ -93,7 +93,7 @@ export default {
 
     salvar() {
       if (this.form.idProduto == null) {
-        ProdutoService.salvar(this.produto)
+        ProdutoService.salvar(this.form)
           .then(() => {
             alert("Produto salvo com sucesso!");
             this.$router.replace({ path: "/produtos" });
@@ -102,20 +102,28 @@ export default {
             alert("Erro ao salvar produto!\n" + error);
             this.$router.replace({ path: "/produtos" });
           });
+      } else {
+        ProdutoService.alterar(this.form)
+          .then(() => {
+            alert("Produto alterado com sucesso!");
+            this.$router.replace({ path: "/produtos" });
+          })
+          .catch(error => {
+            alert("Erro ao alterar produto!\n" + error);
+            this.$router.replace({ path: "/produtos" });
+          });
       }
     },
 
     getProduto() {
       var idProduto = window.location.href.split("=")[1];
-      var produto = produtoService
-        .buscarProdutoPeloId(idProduto)
-        .then(resposta => {
-          this.form.idProduto = resposta.data.idProduto;
-          this.form.codInterno = resposta.data.codInterno;
-          this.form.codBarras = resposta.data.codBarras;
-          this.form.descricao = resposta.data.descricao;
-          this.form.valorVenda = resposta.data.valorVenda;
-        });
+      produtoService.buscarProdutoPeloId(idProduto).then(resposta => {
+        this.form.idProduto = resposta.data.idProduto;
+        this.form.codInterno = resposta.data.codInterno;
+        this.form.codBarras = resposta.data.codBarras;
+        this.form.descricao = resposta.data.descricao;
+        this.form.valorVenda = resposta.data.valorVenda;
+      });
     },
 
     validateCodBarras() {

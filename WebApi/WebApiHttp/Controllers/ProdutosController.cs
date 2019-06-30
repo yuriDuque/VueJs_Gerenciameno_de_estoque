@@ -45,11 +45,6 @@ namespace WebApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != produto.IdProduto)
-            {
-                return BadRequest();
-            }
-
             produto.IdProduto = id;
 
             try
@@ -66,14 +61,14 @@ namespace WebApi.Controllers
 
         // GET: api/Produtos/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProdutoById([FromRoute] int? id)
+        public async Task<IActionResult> GetProdutoById([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var produto = service.BuscarPeloCodInterno(id);
+            var produto = service.BuscarPeloId(id);
 
             if (produto == null)
             {

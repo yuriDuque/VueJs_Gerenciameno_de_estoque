@@ -65,7 +65,7 @@ namespace WebApi.Service
 
                 else
                 {
-                    repository.Update(p);
+                    repository.UpdateProduto(p);
                     return p;
                 }
             }
@@ -81,6 +81,15 @@ namespace WebApi.Service
             }
 
             return new Produto();
+        }
+
+        public Produto BuscarPeloId(int id)
+        {
+            if(id != 0)
+            {
+                return repository.Find(id);
+            }
+            return null;
         }
 
         public bool ExcluirProduto(int? id)
