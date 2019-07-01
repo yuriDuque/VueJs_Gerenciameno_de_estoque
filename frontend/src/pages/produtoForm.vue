@@ -101,29 +101,33 @@ export default {
     },
 
     salvar() {
-      //Verifica se está cadastrando
-      if (this.form.idProduto == null) {
-        ProdutoService.salvar(this.form)
-          .then(() => {
-            alert("Produto salvo com sucesso!");
-            this.$router.replace({ path: "/produtos" });
-          })
-          .catch(error => {
-            alert("Erro ao salvar produto!\n" + error);
-            this.$router.replace({ path: "/produtos" });
-          });
-      }
-      //Verifica se está alterando
-      else {
-        ProdutoService.alterar(this.form)
-          .then(() => {
-            alert("Produto alterado com sucesso!");
-            this.$router.replace({ path: "/produtos" });
-          })
-          .catch(error => {
-            alert("Erro ao alterar produto!\n" + error);
-            this.$router.replace({ path: "/produtos" });
-          });
+      if (this.validateCodBarras() && this.validateCodInterno()) {
+        //Verifica se está cadastrando
+        if (this.form.idProduto == null) {
+          ProdutoService.salvar(this.form)
+            .then(() => {
+              alert("Produto salvo com sucesso!");
+              this.$router.replace({ path: "/produtos" });
+            })
+            .catch(error => {
+              alert("Erro ao salvar produto!\n" + error);
+              this.$router.replace({ path: "/produtos" });
+            });
+        }
+        //Verifica se está alterando
+        else {
+          ProdutoService.alterar(this.form)
+            .then(() => {
+              alert("Produto alterado com sucesso!");
+              this.$router.replace({ path: "/produtos" });
+            })
+            .catch(error => {
+              alert("Erro ao alterar produto!\n" + error);
+              this.$router.replace({ path: "/produtos" });
+            });
+        }
+      } else {
+        alert("Não é possivel salvar um produto com dados invalidos!");
       }
     },
     //Pega o produto com base no id que está na URL
@@ -141,13 +145,17 @@ export default {
     validateCodBarras() {
       if (this.form.codBarras < 0 || this.form.codBarras > 999999999999) {
         alert("Valor no código de barras não é invalido!");
+        return false;
       }
+      return true;
     },
     //Valida o valor no codigo interno
     validateCodInterno() {
       if (this.form.codInterno < 0 || this.form.codInterno > 999999999999) {
         alert("Valor no código interno não é invalido!");
+        return false;
       }
+      return true;
     }
   }
 };

@@ -13,7 +13,7 @@
           </div>
         </b-form-group>
 
-        <b-button type="submit" variant="success" style="margin-right: 10px;">Cadastrar</b-button>
+        <b-button @click="salvar()" variant="success" style="margin-right: 10px;">Cadastrar</b-button>
         <b-button type="reset" variant="secondary" style="margin-right: 10px;">Limpar</b-button>
         <router-link to="/pedidos">
           <b-button type="reset" variant="danger" class="btn-cadastrar">Voltar</b-button>
