@@ -153,7 +153,7 @@ export default {
         resposta.data.forEach(element => {
           element.pedidoProdutos = element.pedidoProdutos.length;
 
-          //inserindo marcara de moeda
+          //Formata o valor total do pedido para o formato do Real - R$ 00,00
           element.valorVenda = element.valorVenda.toLocaleString("pr-br", {
             style: "currency",
             currency: "BRL"
@@ -167,6 +167,7 @@ export default {
     excluir(produto) {
       ProdutoService.excluirProduto(produto.idProduto).then(() => {
         alert("Produto '" + this.produto.descricao + "' excluito com sucesso!");
+        //feito dessa forma para forçar a listagem a atualizar
         this.produtos = null;
         this.listar();
       });
@@ -176,6 +177,8 @@ export default {
       this.$router.replace({
         path: "/produtos/alterar?id=" + produto.idProduto
       });
+      //Tentei emitir o produto para pegar no formulario mas sem sucesso kkkk
+      // PS.: Não consegui pegar no formulario
       this.$emit("emit-produtoAlterar", produto);
     }
   },

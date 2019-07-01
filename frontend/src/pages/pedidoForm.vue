@@ -41,11 +41,6 @@ export default {
       var prods = [];
 
       resposta.data.forEach(element => {
-        /*element.valorVenda = element.valorVenda.toLocaleString("pr-br", {
-          style: "currency",
-          currency: "BRL"
-        });*/
-
         prods.push(
           element.idProduto +
             "-" +
@@ -79,12 +74,15 @@ export default {
     salvar() {
       var produtos = [];
 
+      // Metodos necessarios para remover da string os caracteres indesejados,
+      // e com isso poder montar um JSON que possa ser convertido diretamente na API
       this.selected.forEach(element => {
         element = String(element).trim();
         element = String(element).replace("R$", "");
         element = String(element).replace(".00", "");
         element = String(element).split("-");
 
+        //Instancia o produto para depois converte-lo em JSON
         var produto = {
           idProduto: element[0],
           codInterno: element[1],
@@ -96,19 +94,17 @@ export default {
         produtos.push(produto);
       });
 
+      // Tive dificuldades com o retorno de sucesso da API, sempre retornava erro
       PedidoService.salvar(produtos)
         .then(resposta => {
           alert("Pedido salvo com sucesso!\n" + resposta);
+          this.$router.replace({ path: "/pedidos" });
         })
         .catch(error => {
           alert("Erro ao salvar pedido!\n" + error);
+          //Acidionado o redirecionamento aqui para corrigir rapidamente o erro de retorno da API
+          this.$router.replace({ path: "/pedidos" });
         });
-    },
-
-    validateCodBarras() {
-      if (this.form.codBarras < 0 || this.form.codBarras > 999999999999) {
-        alert("Valor no código de barras é invalido!");
-      }
     }
   }
 };

@@ -23,7 +23,10 @@ namespace WebApi.Service
 
             if(p.IdProduto == 0 && p.CodInterno != 0 && p.CodBarras != 0)
             {
+                //Busca se existe algum produto cadastrado com um codInterno que será cadastrado
                 var codInterno = repository.Get(x => x.CodInterno == p.CodInterno).FirstOrDefault();
+
+                //Busca se existe algum produto cadastrado com um codBarras que será cadastrado
                 var codBarras = repository.Get(x => x.CodBarras == p.CodBarras).FirstOrDefault();
 
                 if(codInterno != null)
@@ -49,14 +52,15 @@ namespace WebApi.Service
                 // está mantendo o produto "p" em memória e não está buscando no banco
                 var oldProduto = repository.Find(p.IdProduto);
 
-                if(p.CodInterno != oldProduto.CodInterno)
+                //Busca se existe algum produto cadastrado com um codBarras que será cadastrado
+                if (p.CodInterno != oldProduto.CodInterno)
                 {
                     var codInterno = repository.Get(x => x.CodInterno == p.CodInterno).FirstOrDefault();
                     if (codInterno != null)
                         throw new Exception("Não é possivel alterar um produto com um código duplicado!");
                 }
-
-                else if(p.CodBarras != oldProduto.CodBarras)
+                //Busca se existe algum produto cadastrado com um codBarras que será cadastrado
+                else if (p.CodBarras != oldProduto.CodBarras)
                 {
                     var codBarras = repository.Get(x => x.CodBarras == p.CodBarras).FirstOrDefault();
                     if (codBarras != null)
@@ -75,7 +79,7 @@ namespace WebApi.Service
 
         public Produto BuscarPeloCodInterno(int cod)
         {
-            if(cod != null)
+            if(cod != 0)
             {
                 return repository.Get(x => x.CodInterno == cod).FirstOrDefault();
             }

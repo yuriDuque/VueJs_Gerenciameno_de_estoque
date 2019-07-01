@@ -55,9 +55,8 @@
       ok-only
       @hide="resetInfoModal"
     >
-      <p class="h6">{{fields[1].label +": "+ pedido.codInterno}}</p>
-      <p class="h6">{{fields[2].label +": "+ pedido.codBarras}}</p>
-      <p class="h6">{{fields[4].label +": "+ pedido.valorVenda}}</p>
+      <p class="h6">{{fields[1].label +": "+ pedido.dataPedido}}</p>
+      <p class="h6">{{fields[2].label +": "+ pedido.valorTotal}}</p>
     </b-modal>
   </div>
 </template>
@@ -82,11 +81,13 @@ export default {
 
     PedidoService.listarPedidos().then(resposta => {
       resposta.data.forEach(element => {
+        //Formata o valor total do pedido para o formato do Real - R$ 00,00
         element.valorTotal = element.valorTotal.toLocaleString("pr-br", {
           style: "currency",
           currency: "BRL"
         });
 
+        //Chama a função para ajustar a data no formato desejado
         element.dataPedido = this.organizarData(element.dataPedido);
 
         //inserindo marcara de moeda
@@ -139,7 +140,8 @@ export default {
   methods: {
     info(item, index, button) {
       this.pedido = item;
-      this.infoModal.title = this.pedido.descricao;
+      //titulo do modal
+      this.infoModal.title = this.pedido.idPedido;
       this.infoModal.content = JSON.stringify(item, null, 2);
       this.$root.$emit("bv::show::modal", this.infoModal.id, button);
     },
@@ -148,10 +150,11 @@ export default {
       this.infoModal.content = "";
     },
     onFiltered(filteredItems) {
-      // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
     },
+
+    // metodo que organiza a data no formato desejado
     organizarData(d) {
       var dataSplit = String(d).split("T");
       var data = dataSplit[0];

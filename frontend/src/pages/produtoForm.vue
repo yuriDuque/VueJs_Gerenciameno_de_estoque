@@ -7,7 +7,12 @@
     <div>
       <b-form @submit="salvar" @reset="onReset" v-if="show">
         <b-form-group id="input-group-1" label="Código Interno:" label-for="input-1">
-          <b-form-input id="codInterno" v-model="form.codInterno" type="number" required></b-form-input>
+          <b-form-input
+            v-model="form.codInterno"
+            type="number"
+            required
+            @change="validateCodInterno"
+          ></b-form-input>
         </b-form-group>
 
         <b-form-group id="input-group-1" label="Código de barras:" label-for="input-1">
@@ -28,18 +33,21 @@
           variant="success"
           style="margin-right: 10px;"
         >Cadastrar</b-button>
+
         <b-button
           @click="salvar()"
           v-if="path === '/produtos/alterar'"
           variant="success"
           style="margin-right: 10px;"
         >Alterar</b-button>
+
         <b-button
           v-if="path === '/produtos/cadastrar' "
           type="reset"
           variant="secondary"
           style="margin-right: 10px;"
         >Limpar</b-button>
+
         <router-link to="/produtos">
           <b-button type="reset" variant="danger" class="btn-cadastrar">Voltar</b-button>
         </router-link>
@@ -76,15 +84,16 @@ export default {
     this.getProduto();
   },
   methods: {
+    //Limpa os dados do formulário
     onReset(evt) {
       evt.preventDefault();
-      // Reset our form values
+
       this.form.idProduto = null;
       this.form.codInterno = null;
       this.form.codBarras = null;
       this.form.descricao = "";
       this.form.valorVenda = null;
-      // Trick to reset/clear native browser form validation state
+
       this.show = false;
       this.$nextTick(() => {
         this.show = true;
@@ -92,6 +101,7 @@ export default {
     },
 
     salvar() {
+      //Verifica se está cadastrando
       if (this.form.idProduto == null) {
         ProdutoService.salvar(this.form)
           .then(() => {
@@ -102,7 +112,9 @@ export default {
             alert("Erro ao salvar produto!\n" + error);
             this.$router.replace({ path: "/produtos" });
           });
-      } else {
+      }
+      //Verifica se está alterando
+      else {
         ProdutoService.alterar(this.form)
           .then(() => {
             alert("Produto alterado com sucesso!");
@@ -114,7 +126,7 @@ export default {
           });
       }
     },
-
+    //Pega o produto com base no id que está na URL
     getProduto() {
       var idProduto = window.location.href.split("=")[1];
       produtoService.buscarProdutoPeloId(idProduto).then(resposta => {
@@ -125,10 +137,16 @@ export default {
         this.form.valorVenda = resposta.data.valorVenda;
       });
     },
-
+    //Valida o valor no codigo de barras
     validateCodBarras() {
       if (this.form.codBarras < 0 || this.form.codBarras > 999999999999) {
-        alert("Valor no código de barras é invalido!");
+        alert("Valor no código de barras não é invalido!");
+      }
+    },
+    //Valida o valor no codigo interno
+    validateCodInterno() {
+      if (this.form.codInterno < 0 || this.form.codInterno > 999999999999) {
+        alert("Valor no código interno não é invalido!");
       }
     }
   }

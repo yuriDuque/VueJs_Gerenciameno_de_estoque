@@ -24,8 +24,11 @@ namespace WebApi.Service
                 {
                     PedidoProdutos = new List<PedidoProdutos>()
                 };
+
+                //Convertendo a data para remover informações desnecessarias - 2019/06/30T23:00:00
                 pedido.DataPedido = Convert.ToDateTime(DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
 
+                //Adiciona os produtos a classe PedidoProdutos dentro do pedido e calcula o valor total do pedido
                 foreach (var p in produtos)
                 { 
                     var produto = produtoService.BuscarPeloCodInterno(p.CodInterno);
@@ -37,11 +40,13 @@ namespace WebApi.Service
                     pedido.PedidoProdutos.Add(pd);
                 }
 
+                //Remove o objeto PedidoProdutos do pedido, para depois salva-la já com o id do pedido
                 var pedidoProdutos = pedido.PedidoProdutos;
                 pedido.PedidoProdutos = new List<PedidoProdutos>();
 
                 repository.Save(pedido);
 
+                //Adiciona o id do pedido nos objetos PedidoProduto
                 foreach(var pd in pedidoProdutos)
                 {
                     pd.IdPedido = pedido.IdPedido;
@@ -66,6 +71,7 @@ namespace WebApi.Service
 
             var produtoRepository = new ProdutoRepository();
 
+            //Busca e adiciona os produtos referente ao pedido
             for(var i = 0; i < pedido.PedidoProdutos.Count; i++)
             {
                 pedido.PedidoProdutos[i].Produto = produtoRepository.Find(pedido.PedidoProdutos[i].IdProduto);
