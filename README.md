@@ -39,6 +39,8 @@ Frontend (Front):
 	
 	> Pages: contem as paginas do projeto criadas em Vue js e suas funções em javascript.
 	
+	> Service: contem os service com as funções que utilizam o Axios para se comunicar com o backend.
+		
 	
 # Ferramentas adicionais usadas
 
